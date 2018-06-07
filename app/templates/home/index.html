@@ -1,0 +1,125 @@
+{% import "bootstrap/utils.html" as utils %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block head %}
+{% endblock %}
+{% block body %}
+<div class="col-md-6" div id="maplist">
+  <div id="map"></div>
+</div>
+<div class="col-md-6"></div>
+<div class="col-md-6">
+  <h2>Temukan kostan terbaikmu dari sini</h2>
+  <div class="row" id="rowmargin">
+    <div class="col-sm-12">
+      <div class="well" id="wellup">
+        <form method='POST' role='form'>
+          {{ form.hidden_tag() }}
+          {{ wtf.form_errors(form, hiddens="only") }}
+          <div>
+            <div class="btn-group btn-group-justified" role="group" >
+              <div class="btn-group" role="group">
+                <div class="dropdown">
+                  {{ wtf.form_field(form.Kota) }}
+                </div>
+              </div>
+              <div class="btn-group" role="group">
+                <div class="dropdown">
+                  {{ wtf.form_field(form.Harga) }}
+                </div>
+              </div>
+              <div class="btn-group" role="group">
+                <div class="dropdown">
+                  {{ wtf.form_field(form.Jenis) }}
+                </div>
+              </div>
+            </div>
+              {{ wtf.form_field(form.submit, class="btn btn-info") }}
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="row" id="objekos">
+    <div class="media well">
+      {% for results in result %}
+      <div class="media-left">
+        <img src="https://file.lelangdjkn.kemenkeu.go.id/foto-objek-lelang/asli/2017/10/11/c93a81ae7778cae9ea4da4c9a45ab34d/Dua-bidang-tanah-dalam-satu-hamparan-berikut-bangunan-Kost-kostan-dijual-dalam-satu-1-paket.jpg" class="media-object" style="width: 100px;">
+      </div>
+      <div class="media-body">
+        <a href="{{ url_for('user.kost_profil', Kname=results.Kname) }}">
+          <h4 class="media-heading">{{ results.Kname }}</h4>
+        </a>
+        {{ results.Kaddress }}, {{ results.city.kota }}
+        <br>
+        {% if current_user.is_authenticated %}
+          Rp{{ results.Kprice }} - Telp. {{ results.Kphone }} - {{ results.Ktype }}
+        {% else %}
+          <i>Login untuk melihat detail kost</i>
+        {% endif %}
+      </div>
+      <br>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+  <footer>
+    <p style="text-align: right;">© 2017 Kospedia Startup, Inc.</p><!--Didalam kanan-->
+  </footer>
+
+<!-- Google MAP API-->
+<script>
+  var map, marker, contentString;
+  function initMap() {
+    map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 11,
+      center: new google.maps.LatLng(-6.2203261,106.8237374),
+    });
+
+    var infowindow = new google.maps.InfoWindow();
+
+    {% for m in query %}
+      marker = new google.maps.Marker({
+      position: new google.maps.LatLng({{m.Klat}}, {{m.Klng}}),
+      map: map,
+      title: '{{ m.Kname }}'
+      });
+
+      google.maps.event.addListener(marker, 'click', (function(marker) {return function() {
+        infowindow.setContent('<b>{{ m.Kname }}</b>'+
+        '<div id="bodyContent">'+
+        '{{ m.Kaddress }}, {{ m.city.kota }}'+
+        '</div>');
+        infowindow.open(map, marker);
+        }
+      })(marker));
+
+    {% endfor %}
+  }
+</script>
+<!-- <script>
+  function initMap() {
+    var map = new google.maps.Map(document.getElementById('map'), {
+      center: {lat: -6.2293867, lng: 106.6894298},
+      zoom: 11
+    });
+    for m in query:
+      map.add_marker(m['Klat'], m['Klng'])
+  } -->
+</script>
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAyoxpbvRDXrAdzZxkDqLxG20U1p1EjAKU&callback=initMap">
+</script>
+
+<script>
+  $(document).ready(function(){
+    $("#myInput").on("keyup", function(){
+      var value= $(this).val().toLowerCase();
+      $(".dropdown-menu li").filter(function(){
+        $(this).toggle($(this).text().toLowerCase().indexOf(value)>-1)
+      });
+    });
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% import "bootstrap/utils.html" as utils %}
+{% extends "base.html" %}
+{% block title %}Kosts{% endblock %}
+{% block body %}
+<div class="content-section">
+  <div class="outer">
+    <div class="middle">
+      <div class="inner">
+        {{ utils.flashed_messages() }}
+        <h1 style="text-align:center;">Kosts</h1>
+        {% if kosts %}
+          <hr class="intro-divider">
+          <div class="center">
+            <table class="table table-striped table-bordered">
+              <thead>
+                <tr>
+                  <th class="text-center" width="15%"> Nama </th>
+                  <th class="text-center" width="40%"> Alamat </th>
+                  <th class="text-center" width="10%"> Lat / Lng </th>
+                  <th class="text-center" width="10%"> Telepon </th>
+                  <th class="text-center" width="10%"> User </th>
+                  <th class="text-center" width="5%"> Edit </th>
+                  <th class="text-center" width="5%"> Verify </th>
+                  <th class="text-center" width="5%"> Delete </th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for kost in kosts %}
+                <tr>
+                  <td> {{ kost.Kname }} </td>
+                  <td> {{ kost.Kaddress }}, {{ kost.city.kota }} </td>
+                  <td> {{ kost.Klat }} / {{ kost.Klng }} </td>
+                  <td> {{ kost.Kphone }} </td>
+                  <td> {{ kost.user.username }} </td>
+                  <td class="warning text-center">
+                    <a href="{{ url_for('admin.edit_kost', id=kost.Kid) }}" class="btn btn-warning btn-xs" role="button">
+                      <i class="glyphicon glyphicon-pencil"></i>
+                    </a>
+                  </td>
+                  <td class="info text-center">
+                    {% if kost.Kverified == True %}
+                      <a href="{{ url_for('admin.verifikasi_kost', id=kost.Kid) }}" class="btn btn-primary btn-xs" role="button">
+                        <i class="glyphicon glyphicon-ok-sign"></i>
+                      </a>
+                    {% else %}
+                      <a href="{{ url_for('admin.verifikasi_kost', id=kost.Kid) }}" class="btn btn-default btn-xs" role="button">
+                        <i class="glyphicon glyphicon-ok-circle"></i>
+                      </a>
+                    {% endif %}
+                  </td>
+                  <td class="danger text-center">
+                    <a href="{{ url_for('admin.delete_kost', id=kost.Kid) }}" class="btn btn-danger btn-xs" role="button">
+                      <i class="fa fa-trash"></i>
+                    </a>
+                  </td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <div style="text-align: center">
+        {% else %}
+          <div style="text-align: center">
+            <h3> Belum ada kost yang terdaftar. </h3>
+            <hr class="intro-divider">
+        {% endif %}
+          <a href="{{ url_for('admin.add_kost') }}" class="btn btn-default btn-lg">
+            <i class="fa fa-plus"></i>
+            Tambah Kost
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+{% endblock %}

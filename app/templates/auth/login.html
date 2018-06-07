@@ -1,0 +1,16 @@
+{% import "bootstrap/utils.html" as utils %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% extends "base.html" %}
+{% block title %}Login - Kospedia{% endblock %}
+{% block body %}
+<div class="halaman-form">
+  <div class="content-section">
+    {{ utils.flashed_messages() }}
+    <div class="center">
+      <h1>Silakan masuk</h1>
+      <br/>
+      {{ wtf.quick_form(form) }}
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}
+Edit Profil
+{% endblock %}
+{% block body %}
+<div class="container-fluid">
+  <div class="row content">
+        <br>
+        {% for kosts in kost %}
+    <div class="col-sm-9">
+      <div class="row">
+      <div class="col-sm-6 ">
+        <img src="https://file.lelangdjkn.kemenkeu.go.id/foto-objek-lelang/asli/2017/10/11/c93a81ae7778cae9ea4da4c9a45ab34d/Dua-bidang-tanah-dalam-satu-hamparan-berikut-bangunan-Kost-kostan-dijual-dalam-satu-1-paket.jpg" class="media-object" alt="Sky Space Moon Outdoors" style="max-height:250px;">
+      </div>
+      <div class="col-sm-6">
+          <div class="page-header">
+            <h2>
+            <span class="glyphicon glyphicon-home"></span>
+            {{ kosts.Kname }}
+            </h2>
+          </div>
+
+          <div class="col-sm-6">
+            <h4>
+              <span class="glyphicon glyphicon-map-marker"></span>
+              Alamat :
+            </h4>
+            <p>{{ kosts.Kaddress }}, {{ kosts.city.kota }}</p>
+            <h4>Harga</h4>
+            <h4><b>Rp {{ kosts.Kprice }}</b></h4>
+          </div>
+        </div>
+      </div>
+      <br>
+    <div class="row">
+      <div class="well" style="padding: 0px">
+        <div id="map" style="width: 100%; height: 300px;"></div>
+      </div>
+    </div>
+    {% endfor %}
+
+    <script>
+      var map, marker, contentString;
+      function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 11,
+          center: new google.maps.LatLng(-6.2203261,106.8237374),
+        });
+
+        var infowindow = new google.maps.InfoWindow();
+
+        {% for m in kost %}
+          marker = new google.maps.Marker({
+          position: new google.maps.LatLng({{m.Klat}}, {{m.Klng}}),
+          map: map,
+          title: '{{ m.Kname }}'
+          });
+
+          google.maps.event.addListener(marker, 'click', (function(marker) {return function() {
+            infowindow.setContent('<b>{{ m.Kname }}</b>'+
+            '<div id="bodyContent">'+
+            '{{ m.Kaddress }}, {{ m.city.kota }}'+
+            '</div>');
+            infowindow.open(map, marker);
+            }
+          })(marker));
+
+        {% endfor %}
+      }
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAyoxpbvRDXrAdzZxkDqLxG20U1p1EjAKU&callback=initMap">
+    </script>
+
+    </div>
+    </div>
+
+  </div>
+{% endblock %}
